@@ -17,6 +17,12 @@
 using namespace std;
 const int numToken = 55;
 typedef short int tArray[numToken];
+typedef short int tToken[numToken];
+typedef short int tArrayToken[numToken];
+typedef short int tPlayers[numToken];
+typedef short int tPointsPlayers[numToken];
+typedef short int tPlay[numToken];
+
 int maxNumber = 0;
 
 string toStr(int n) {
