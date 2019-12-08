@@ -346,19 +346,8 @@ bool canDrawToken(string board, tArrayToken tokenN1, tArrayToken tokenN2, int nu
     return true;
 }
 
-void init(tPlay& play, int& jugador) {
-
-}
-
-int main(int argc, const char * argv[]) {
-    tPlay play;
-    string board;
-    int numPlayerToken;
-    srand(time(NULL));
-
-	if (!openFile() || !readGame(play, board)) {
-
-		maxNumber = chooseMax();
+void init(tPlay& play, int& numPlayerToken) {
+    maxNumber = chooseMax();
 
 		generatePool(play);
 		disorderPool(play);
@@ -373,6 +362,16 @@ int main(int argc, const char * argv[]) {
 
 		board = tokenToStr(pool1[numPoolToken-1],pool2[numPoolToken-1]);
 		numPoolToken--;
+}
+
+int main(int argc, const char * argv[]) {
+    tPlay play;
+    string board;
+    int numPlayerToken;
+    srand(time(NULL));
+
+	if (!openFile() || !readGame(play, board)) {
+        init(tPlay& play, int& numPlayerToken);
 	}
     
     for (int option = 0; option != 4;) {
