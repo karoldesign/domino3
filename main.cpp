@@ -72,10 +72,10 @@ string toStr(int n) {
     }
 }
 
-int maxNumTokens(int maxNumber)
+int maxNumTokens(tPlay play)
 {
 	int sum = 0;
-	for (int i = 1; i <= maxNumber+1; i++)
+	for (int i = 1; i <= play.maxNumber+1; i++)
 		sum += i;
 
 	return sum;
@@ -346,9 +346,14 @@ bool canDrawToken(string board, tArrayToken tokenN1, tArrayToken tokenN2, int nu
     return true;
 }
 
+void init(tPlay& play, int& jugador) {
+
+}
+
 int main(int argc, const char * argv[]) {
     tPlay play;
     string board;
+    int numPlayerToken;
     srand(time(NULL));
 
 	if (!openFile() || !readGame(play, board)) {
@@ -358,11 +363,11 @@ int main(int argc, const char * argv[]) {
 		generatePool(play);
 		disorderPool(play);
 		numPlayerToken = 7;
-		numPoolToken = maxNumTokens(maxNumber);
+		numPoolToken = maxNumTokens(play);
 
 		for (int i = 0; i < numPlayerToken; i++) {
-			tokenN1[i] = pool1[numPoolToken-1];
-			tokenN2[i] = pool2[numPoolToken-1];
+			tokenN1[i] = play.pool.listToken.tokenN1[numPoolToken-1];
+			tokenN2[i] = play.pool.listToken.tokenN2[numPoolToken-1];
 			numPoolToken--;
 		}
 
