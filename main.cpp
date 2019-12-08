@@ -231,8 +231,8 @@ void generatePool(tPlay play) {
     int k = 0;
     for ( int i = 0; i <= play.maxNumber; i++ ) {
         for ( int j = 0; j <= i; j++ ) {
-            play.pool.listToken.tokenN1[ k ] = i;
-            play.pool.listToken.tokenN2[ k ] = j;
+            play.pool.listToken[k].token1 = i;
+            play.pool.listToken[k].token2 = j;
             k++;
         }
     }
