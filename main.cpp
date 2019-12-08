@@ -354,10 +354,13 @@ void init(tPlay& play, int& numPlayerToken) {
 		numPlayerToken = 7;
 		numPoolToken = maxNumTokens(play);
 
-		for (int i = 0; i < numPlayerToken; i++) {
-			tokenN1[i] = play.pool.listToken[play.pool.cont-1].token1;
-			tokenN2[i] = play.pool.listToken[play.pool.cont-1].token2;
-			play.pool.cont--;
+		for (int j = 0; j < play.numbersPlayers; j++) {
+			for (int i = 0; i < numPlayerToken; i++) {
+				play.players[j].listToken[i].token1 = play.pool.listToken[play.pool.cont-1].token1;
+				play.players[j].listToken[i].token2 = play.pool.listToken[play.pool.cont-1].token2;
+				play.players[j].cont++;
+				play.pool.cont--;
+			}
 		}
 
 		board = tokenToStr(play.listToken[play.pool.cont-1].token1,play.listToken[play.pool.cont-1].token2);
@@ -371,7 +374,7 @@ int main(int argc, const char * argv[]) {
     srand(time(NULL));
 
 	if (!openFile() || !readGame(play, board)) {
-        init(tPlay& play, int& numPlayerToken);
+        init(play, numPlayerToken);
 	}
     
     for (int option = 0; option != 4;) {
