@@ -360,7 +360,6 @@ void init(tPlay& play, int& numPlayerToken) {
 			play.pool.cont--;
 		}
 
-		board = tokenToStr(play.listToken[play.pool.cont-1].token1,play.listToken[play.pool.cont-1].token2);
 		play.pool.cont--;
 }
 
@@ -372,6 +371,7 @@ int main(int argc, const char * argv[]) {
 
 	if (!openFile() || !readGame(play, board)) {
         init(play, numPlayerToken);
+		board = tokenToStr(play.listToken[play.pool.cont-1].token1,play.listToken[play.pool.cont-1].token2);
 	}
     
     for (int option = 0; option != 4;) {
