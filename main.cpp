@@ -16,12 +16,39 @@
 
 using namespace std;
 const int numToken = 55;
-typedef short int tArray[numToken];
-typedef short int tToken[numToken];
 typedef short int tArrayToken[numToken];
-typedef short int tPlayers[numToken];
-typedef short int tPointsPlayers[numToken];
-typedef short int tPlay[numToken];
+
+typedef struct {
+    tArrayToken tToken1;
+    tArrayToken tToken2;
+} tToken;
+
+typedef struct {
+    tArrayToken tPlayer1;
+    tArrayToken tPlayer2;
+    tArrayToken tPlayer3;
+    tArrayToken tPlayer4;
+} tPlayers;
+
+typedef struct {
+    tArrayToken listToken;
+    int cont
+} tListToken;
+
+typedef struct {
+    int countPoints1;
+    int countPoints2;
+    int countPoints3;
+    int countPoints4;
+} tPoints;
+
+typedef struct {
+    int numbersPlayers
+    int maxNumber;
+    tArrayToken pool1;
+    tArrayToken pool2;
+    tPoints points;
+} tPlay;
 
 int maxNumber = 0;
 
@@ -68,7 +95,7 @@ string tokenToStr(short int left, short int right) {
 }
 
 // painting pool
-string poolToStr(tArray pool1, tArray pool2, int numPlayerToken) {
+string poolToStr(tArrayToken pool1, tArrayToken pool2, int numPlayerToken) {
     string str;
     
     for ( int i = 0; i < numPlayerToken; i++ ) {
@@ -96,7 +123,7 @@ string putTokenRight(string board, short int tokenN1, short int tokenN2) {
 }
 
 
-void deleteToken (tArray tokenN1, tArray tokenN2, short int& numPlayerToken, short int numToken) {
+void deleteToken (tArrayToken tokenN1, tArrayToken tokenN2, short int& numPlayerToken, short int numToken) {
     for(int i = numToken; i < numPlayerToken; i++) {
         tokenN1[i] = tokenN1[i+1];
         tokenN2[i] = tokenN2[i+1];
@@ -104,14 +131,20 @@ void deleteToken (tArray tokenN1, tArray tokenN2, short int& numPlayerToken, sho
     numPlayerToken--;
 }
 
-void drawTokens (tArray pool1, tArray pool2, short int& cont, short int& tokenN1, short int& tokenN2) {
+void drawTokens (tArrayToken pool1, tArrayToken pool2, short int& cont, short int& tokenN1, short int& tokenN2) {
 	tokenN1 = pool1[cont-1];
 	tokenN2 = pool2[cont-1];
 	cont--;
 }
 
+//Lee las fichas del siguiente renglón del archivo de entrada:
+void readToken(ifstream& entrada, tListaFichas& listaFichas) {
+
+}
+
+
 // Tablero
-void showBoard(tArray tokenN1, tArray tokenN2, string board, int numCounter, int numStolen, int numPlayerToken) {
+void showBoard(tArrayToken tokenN1, tArrayToken tokenN2, string board, int numCounter, int numStolen, int numPlayerToken) {
     cout << " -------------------- " << endl;
     cout << "|       TABLERO      |" << endl;
     cout << " -------------------- " << endl;
@@ -146,7 +179,7 @@ short int aleat(int n) {
     return rand()%(n+1);
 }
 
-short int chooseToken(tArray tokenN1, tArray tokenN2, int numPlayerToken) {
+short int chooseToken(tArrayToken tokenN1, tArrayToken tokenN2, int numPlayerToken) {
     int chooseToken = 0;
 
     for(int i = 0; i < numPlayerToken; i++) {
@@ -192,7 +225,7 @@ bool openFile() {
     return option == 'S';
 }
 
-void generatePool(tArray pool1, tArray pool2, int maxNumber) {
+void generatePool(tArrayToken pool1, tArrayToken pool2, int maxNumber) {
     int k = 0;
     for ( int i = 0; i <= maxNumber; i++ ) {
         for ( int j = 0; j <= i; j++ ) {
@@ -203,7 +236,7 @@ void generatePool(tArray pool1, tArray pool2, int maxNumber) {
     }
 }
 
-void disorderPool(tArray pool1, tArray pool2) {
+void disorderPool(tArrayToken pool1, tArrayToken pool2) {
     int idx;
     short int tmp1, tmp2;
         for (int i = maxNumTokens(maxNumber) - 1; i >= 0; i--) {
@@ -219,63 +252,63 @@ void disorderPool(tArray pool1, tArray pool2) {
     }
 }
 
-string convertArrayToString(tArray xs, short int maxNumber) {
+string convertArrayTokenToString(tArrayToken xs, short int maxNumber) {
     string returnstring;
     for (int temp = 0; temp < maxNumber; temp++)
         returnstring += toStr(xs[temp]);
     return returnstring;
 }
 
-void convertStringToArray(string el, int num, tArray arr) {
+void convertStringToArray(string el, int num, tArrayToken arr) {
     for (int i = 0; i < num; ++i) {
         arr[i] = el[i] - '0';
     }
 }
 
-bool collectData(tArray pool1, tArray pool2, short int& numPlayerToken, string& board, tArray tokenN1, tArray tokenN2, short int& numPoolToken, int& counter, int& stolen) {
-	ifstream archivo;
+void readListToken(ifstream& archivo, tListToken& listToken) {
+    string _el
+    archivo >> _el
+    convertStringToArray(_el, numPoolToken, listToken.listToken.tokenN1);
+    
+}
+
+bool collectData(tArrayToken pool1, tArrayToken pool2, short int& numPlayerToken, string& board, tArrayToken tokenN1, tArrayToken tokenN2, short int& numPoolToken, int& counter, int& stolen) {
+    ifstream archivo;
     archivo.open("domino_save.txt", ios::in);
-	if (!archivo.is_open())
-	{
-		cout << "¡No se ha podido abrir el archivo!" << endl;
-		return false;
-	}
-    string _numPoolToken, _numPlayerToken, _pool1, _pool2, _tokenN1, _tokenN2;
+    if (!archivo.is_open()) {
+        cout << "¡No se ha podido abrir el archivo!" << endl;
+        return false;
+    }
+    string _numPoolToken, _numPlayerToken;
 
     archivo >> board;
     archivo >> _numPlayerToken;
     archivo >> _numPoolToken;
-    archivo >> _pool1;
-    archivo >> _pool2;
-    archivo >> _tokenN1;
-    archivo >> _tokenN2;
+    readListToken(archivo, listToken);
+    readListToken(archivo, listToken);
     archivo >> counter;
     archivo >> stolen;
     archivo >> maxNumber;
 
     numPlayerToken = stoi(_numPlayerToken);
     numPoolToken = stoi(_numPoolToken);
-    convertStringToArray(_pool1, numPoolToken, pool1);
-    convertStringToArray(_pool2, numPoolToken, pool2);
-    convertStringToArray(_tokenN1, numPoolToken, tokenN1);
-    convertStringToArray(_tokenN2, numPoolToken, tokenN2);
 
     archivo.close();
-
-	return true;
+    
+    return true;
 }
 
-void saveCollectData(tArray pool1, tArray pool2, short int numPlayerToken, string board, tArray tokenN1, tArray tokenN2, int numPoolToken, int counter, int stolen) {
-	ofstream file;
+void saveCollectData(tArrayToken pool1, tArrayToken pool2, short int numPlayerToken, string board, tArrayToken tokenN1, tArrayToken tokenN2, int numPoolToken, int counter, int stolen) {
+    ofstream file;
     file.open("domino_save.txt", ios::out);
     if (file.is_open()) {
     file << board << '\n'
         << numPlayerToken << '\n'
         << numPoolToken << '\n'
-        << convertArrayToString(pool1, maxNumTokens(maxNumber)) << '\n'
-        << convertArrayToString(pool2, maxNumTokens(maxNumber)) << '\n'
-        << convertArrayToString(tokenN1, numPlayerToken) << '\n'
-        << convertArrayToString(tokenN2, numPlayerToken) << '\n'
+        << convertArrayTokenToString(pool1, maxNumTokens(maxNumber)) << '\n'
+        << convertArrayTokenToString(pool2, maxNumTokens(maxNumber)) << '\n'
+        << convertArrayTokenToString(tokenN1, numPlayerToken) << '\n'
+        << convertArrayTokenToString(tokenN2, numPlayerToken) << '\n'
         << counter << '\n'
         << stolen << '\n'
         << maxNumber << '\n';
@@ -288,7 +321,7 @@ void saveCollectData(tArray pool1, tArray pool2, short int numPlayerToken, strin
 }
 
 
-bool canDrawToken(string board, tArray tokenN1, tArray tokenN2, int numPlayerToken) {
+bool canDrawToken(string board, tArrayToken tokenN1, tArrayToken tokenN2, int numPlayerToken) {
     bool canPutLeftBool = true;
     bool canPutRightBool = true;
 
@@ -307,11 +340,11 @@ int main(int argc, const char * argv[]) {
     int stolen = 0;
     short int numPlayerToken = 0;
     short int numPoolToken = 0;
-    tArray tokenN1;
-    tArray tokenN2;
+    tArrayToken tokenN1;
+    tArrayToken tokenN2;
     string board;
-    tArray pool1;
-    tArray pool2;
+    tArrayToken pool1;
+    tArrayToken pool2;
     
     
     srand(time(NULL));
