@@ -227,29 +227,29 @@ bool openFile() {
     return option == 'S';
 }
 
-void generatePool(tArrayToken pool1, tArrayToken pool2, int maxNumber) {
+void generatePool(tPlay play) {
     int k = 0;
-    for ( int i = 0; i <= maxNumber; i++ ) {
+    for ( int i = 0; i <= play.maxNumber; i++ ) {
         for ( int j = 0; j <= i; j++ ) {
-            pool1[ k ] = i;
-            pool2[ k ] = j;
+            play.pool.listToken.tokenN1[ k ] = i;
+            play.pool.listToken.tokenN2[ k ] = j;
             k++;
         }
     }
 }
 
-void disorderPool(tArrayToken pool1, tArrayToken pool2) {
+void disorderPool(tPlay play) {
     int idx;
     short int tmp1, tmp2;
         for (int i = maxNumTokens(maxNumber) - 1; i >= 0; i--) {
             idx = rand() % (i + 1);
             if (i != idx) {
-            tmp1 = pool1[i];
-            tmp2 = pool2[i];
-            pool1[i] = pool1[idx];
-            pool2[i] = pool2[idx];
-            pool1[idx] = tmp1;
-            pool2[idx] = tmp2;
+            tmp1 = play.pool.listToken.tokenN1[i];
+            tmp2 = play.pool.listToken.tokenN2[i];
+            play.pool.listToken.tokenN1[i] = play.pool.listToken.tokenN1[idx];
+            play.pool.listToken.tokenN2[i] = play.pool.listToken.tokenN2[idx];
+            play.pool.listToken.tokenN1[idx] = tmp1;
+            play.pool.listToken.tokenN2[idx] = tmp2;
         }
     }
 }
@@ -347,16 +347,16 @@ bool canDrawToken(string board, tArrayToken tokenN1, tArrayToken tokenN2, int nu
 }
 
 int main(int argc, const char * argv[]) {
+    tPlay play;
     string board;
     srand(time(NULL));
-
 
 	if (!openFile() || !readGame(play, board)) {
 
 		maxNumber = chooseMax();
 
-		generatePool(pool1, pool2, maxNumber);
-		disorderPool(pool1, pool2);
+		generatePool(play);
+		disorderPool(play);
 		numPlayerToken = 7;
 		numPoolToken = maxNumTokens(maxNumber);
 
