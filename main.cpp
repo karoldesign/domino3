@@ -276,7 +276,7 @@ void readListToken(ifstream& archivo, tListToken& listToken) {
     
 }
 
-bool collectData(tPlay play, string& board) {
+bool readGame(tPlay play, string& board) {
     ifstream archivo;
     archivo.open("domino_save.txt", ios::in);
     if (!archivo.is_open()) {
@@ -301,20 +301,28 @@ bool collectData(tPlay play, string& board) {
     return true;
 }
 
-void saveCollectData(tArrayToken pool1, tArrayToken pool2, short int numPlayerToken, string board, tArrayToken tokenN1, tArrayToken tokenN2, int numPoolToken, int counter, int stolen) {
+void writeListToken(ofstream& archivo, tListToken& listToken) {
+	for (int i = 0; i < listToken.cont; i++)
+	{
+		archivo << listToken.listToken[i].token1 << " " << listToken.listToken[i].token2 << " ";
+	}
+	archivo << endl;
+}
+
+void writeGame(tPlay play, string board) {
     ofstream file;
     file.open("domino_save.txt", ios::out);
     if (file.is_open()) {
-    file << board << '\n'
-        << numPlayerToken << '\n'
-        << numPoolToken << '\n'
-        << convertArrayTokenToString(pool1, maxNumTokens(maxNumber)) << '\n'
-        << convertArrayTokenToString(pool2, maxNumTokens(maxNumber)) << '\n'
-        << convertArrayTokenToString(tokenN1, numPlayerToken) << '\n'
-        << convertArrayTokenToString(tokenN2, numPlayerToken) << '\n'
-        << counter << '\n'
-        << stolen << '\n'
-        << maxNumber << '\n';
+    file << play.numbersPlayers << " " << play.maxNumber <<endl
+		<< board << endl
+        << play.pool.cont << endl;
+		writeListToken(file, play.pool);
+		for (int i = 0; i < play.numbersPlayers; i++)
+		{
+			file << play.players[i].cont << endl;
+			writeListToken(file, play.players[i]);
+			file << play.points[i] << endl;
+		}
 
         file.close();
 
