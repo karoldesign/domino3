@@ -355,13 +355,13 @@ void init(tPlay& play, int& numPlayerToken) {
 		numPoolToken = maxNumTokens(play);
 
 		for (int i = 0; i < numPlayerToken; i++) {
-			tokenN1[i] = play.pool.listToken.tokenN1[numPoolToken-1];
-			tokenN2[i] = play.pool.listToken.tokenN2[numPoolToken-1];
-			numPoolToken--;
+			tokenN1[i] = play.pool.listToken[play.pool.cont-1].token1;
+			tokenN2[i] = play.pool.listToken[play.pool.cont-1].token2;
+			play.pool.cont--;
 		}
 
-		board = tokenToStr(pool1[numPoolToken-1],pool2[numPoolToken-1]);
-		numPoolToken--;
+		board = tokenToStr(play.listToken[play.pool.cont-1].token1,play.listToken[play.pool.cont-1].token2);
+		play.pool.cont--;
 }
 
 int main(int argc, const char * argv[]) {
