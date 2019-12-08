@@ -16,37 +16,29 @@
 
 using namespace std;
 const int numToken = 55;
-typedef short int tArrayToken[numToken];
+const int MAX_PLAYERS = 4;
 
 typedef struct {
-    tArrayToken tToken1;
-    tArrayToken tToken2;
+    short int token1;
+    short int token2;
 } tToken;
 
-typedef struct {
-    tArrayToken tPlayer1;
-    tArrayToken tPlayer2;
-    tArrayToken tPlayer3;
-    tArrayToken tPlayer4;
-} tPlayers;
+typedef tToken tArrayToken[numToken];
 
 typedef struct {
     tArrayToken listToken;
-    int cont
+    int cont;
 } tListToken;
 
-typedef struct {
-    int countPoints1;
-    int countPoints2;
-    int countPoints3;
-    int countPoints4;
-} tPoints;
+typedef tListToken tPlayers[MAX_PLAYERS];
+
+typedef int tPoints[MAX_PLAYERS];
 
 typedef struct {
-    int numbersPlayers
+    int numbersPlayers;
     int maxNumber;
-    tArrayToken pool1;
-    tArrayToken pool2;
+    tArrayToken pool;
+	tPlayers players;
     tPoints points;
 } tPlay;
 
@@ -95,12 +87,11 @@ string tokenToStr(short int left, short int right) {
 }
 
 // painting pool
-string poolToStr(tArrayToken pool1, tArrayToken pool2, int numPlayerToken) {
+string poolToStr(tListToken pool) {
     string str;
     
-    for ( int i = 0; i < numPlayerToken; i++ ) {
-        str = str + tokenToStr(pool1[i], pool2[i]);
-
+    for ( int i = 0; i < pool.cont; i++ ) {
+        str = str + tokenToStr(pool.listToken.token1[i], pool.listToken.token2[i]);
     }
     return str;
 }
@@ -144,13 +135,24 @@ void readToken(ifstream& entrada, tListaFichas& listaFichas) {
 
 
 // Tablero
-void showBoard(tArrayToken tokenN1, tArrayToken tokenN2, string board, int numCounter, int numStolen, int numPlayerToken) {
+void showBoard(tListToken token, tPlay play, string board, int numCounter, int numStolen) {
     cout << " -------------------- " << endl;
     cout << "|       TABLERO      |" << endl;
     cout << " -------------------- " << endl;
     cout << board << endl;
     cout << "Fichas colocadas: " << numCounter << " - Fichas robadas: " << numStolen << endl;
-    cout << "Fichas del jugador: " << poolToStr(tokenN1, tokenN2, numPlayerToken) << endl;
+    cout << "Fichas del jugador: " << poolToStr(token) << endl;
+	if (muestraFichasMaquina)
+	{
+		for (int i = 0; i < play.numbersPlayers - 1; i++)
+		{
+			cout << "Maquina#" << i + 1 << ": " << poolToStr();
+		}
+	}
+	else
+	{
+
+	}
     return;
 }
 
