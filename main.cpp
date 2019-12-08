@@ -17,6 +17,7 @@
 using namespace std;
 const int numToken = 55;
 const int MAX_PLAYERS = 4;
+bool muestraFichasMaquina = true;
 
 typedef struct {
     short int token1;
@@ -37,7 +38,7 @@ typedef int tPoints[MAX_PLAYERS];
 typedef struct {
     int numbersPlayers;
     int maxNumber;
-    tArrayToken pool;
+    tListToken pool;
 	tPlayers players;
     tPoints points;
 } tPlay;
@@ -91,7 +92,7 @@ string poolToStr(tListToken pool) {
     string str;
     
     for ( int i = 0; i < pool.cont; i++ ) {
-        str = str + tokenToStr(pool.listToken.token1[i], pool.listToken.token2[i]);
+        str = str + tokenToStr(pool.listToken[i].token1, pool.listToken[i].token2);
     }
     return str;
 }
@@ -128,31 +129,30 @@ void drawTokens (tArrayToken pool1, tArrayToken pool2, short int& cont, short in
 	cont--;
 }
 
-//Lee las fichas del siguiente renglón del archivo de entrada:
-void readToken(ifstream& entrada, tListaFichas& listaFichas) {
-
-}
-
-
 // Tablero
-void showBoard(tListToken token, tPlay play, string board, int numCounter, int numStolen) {
+void showBoard(tPlay play, string board) {
     cout << " -------------------- " << endl;
     cout << "|       TABLERO      |" << endl;
     cout << " -------------------- " << endl;
-    cout << board << endl;
-    cout << "Fichas colocadas: " << numCounter << " - Fichas robadas: " << numStolen << endl;
-    cout << "Fichas del jugador: " << poolToStr(token) << endl;
+    cout << board << endl << endl;
 	if (muestraFichasMaquina)
 	{
 		for (int i = 0; i < play.numbersPlayers - 1; i++)
 		{
-			cout << "Maquina#" << i + 1 << ": " << poolToStr();
+			cout << "Maquina#" << i + 1 << ": " << poolToStr(play.players[i+1]) << endl;
 		}
+
 	}
 	else
 	{
-
+		for (int i = 0; i < play.numbersPlayers - 1; i++)
+		{
+			cout << "Maquina#" << i + 1 << ": " << play.players[i+1].cont << " fichas." << endl;
+		}
 	}
+
+    cout << endl << "Jugador: " << poolToStr(play.players[0]) << endl;
+
     return;
 }
 
@@ -268,32 +268,33 @@ void convertStringToArray(string el, int num, tArrayToken arr) {
 }
 
 void readListToken(ifstream& archivo, tListToken& listToken) {
-    string _el
-    archivo >> _el
-    convertStringToArray(_el, numPoolToken, listToken.listToken.tokenN1);
+	for (int i = 0; i < listToken.cont; i++)
+	{
+		archivo >> listToken.listToken[i].token1;
+		archivo >> listToken.listToken[i].token2;
+	}
     
 }
 
-bool collectData(tArrayToken pool1, tArrayToken pool2, short int& numPlayerToken, string& board, tArrayToken tokenN1, tArrayToken tokenN2, short int& numPoolToken, int& counter, int& stolen) {
+bool collectData(tPlay play, string& board) {
     ifstream archivo;
     archivo.open("domino_save.txt", ios::in);
     if (!archivo.is_open()) {
         cout << "¡No se ha podido abrir el archivo!" << endl;
         return false;
     }
-    string _numPoolToken, _numPlayerToken;
 
+	archivo >> play.numbersPlayers;
+    archivo >> play.maxNumber;
     archivo >> board;
-    archivo >> _numPlayerToken;
-    archivo >> _numPoolToken;
-    readListToken(archivo, listToken);
-    readListToken(archivo, listToken);
-    archivo >> counter;
-    archivo >> stolen;
-    archivo >> maxNumber;
-
-    numPlayerToken = stoi(_numPlayerToken);
-    numPoolToken = stoi(_numPoolToken);
+	archivo >> play.pool.cont ;
+    readListToken(archivo, play.pool);
+	for (int i = 0; i < play.numbersPlayers; i++)
+	{
+		archivo >> play.players[i].cont;
+		readListToken(archivo, play.players[i]);
+		archivo >> play.points[i];
+	}
 
     archivo.close();
     
