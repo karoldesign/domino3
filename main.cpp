@@ -378,7 +378,7 @@ int main(int argc, const char * argv[]) {
 	}
     
     for (int option = 0; option != 4;) {
-        showBoard(tokenN1, tokenN2, board, counter, stolen, numPlayerToken);
+        showBoard(plsy, board);
         option = showMenu();
         short int chosen;
 
@@ -434,7 +434,7 @@ int main(int argc, const char * argv[]) {
     }
     
     if (chooseSave()) {
-        saveCollectData(pool1, pool2, numPlayerToken, board, tokenN1, tokenN2, numPoolToken, counter, stolen);
+        writeGame(play, board);
     }
     return 0;
 }
