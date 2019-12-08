@@ -352,7 +352,7 @@ void init(tPlay& play, int& numPlayerToken) {
 		generatePool(play);
 		disorderPool(play);
 		numPlayerToken = 7;
-		numPoolToken = maxNumTokens(play);
+		play.pool.cont = maxNumTokens(play);
 
 		for (int i = 0; i < numPlayerToken; i++) {
 			tokenN1[i] = play.pool.listToken[play.pool.cont-1].token1;
