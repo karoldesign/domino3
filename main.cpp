@@ -347,21 +347,11 @@ bool canDrawToken(string board, tArrayToken tokenN1, tArrayToken tokenN2, int nu
 }
 
 int main(int argc, const char * argv[]) {
-    int counter = 0;
-    int stolen = 0;
-    short int numPlayerToken = 0;
-    short int numPoolToken = 0;
-    tArrayToken tokenN1;
-    tArrayToken tokenN2;
     string board;
-    tArrayToken pool1;
-    tArrayToken pool2;
-    
-    
     srand(time(NULL));
 
 
-	if (!openFile() || !collectData(pool1, pool2, numPlayerToken, board, tokenN1, tokenN2, numPoolToken, counter, stolen)) {
+	if (!openFile() || !readGame(play, board)) {
 
 		maxNumber = chooseMax();
 
