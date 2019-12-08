@@ -241,31 +241,31 @@ void generatePool(tPlay play) {
 void disorderPool(tPlay play) {
     int idx;
     short int tmp1, tmp2;
-        for (int i = maxNumTokens(maxNumber) - 1; i >= 0; i--) {
+        for (int i = maxNumTokens(play) - 1; i >= 0; i--) {
             idx = rand() % (i + 1);
             if (i != idx) {
-            tmp1 = play.pool.listToken.tokenN1[i];
-            tmp2 = play.pool.listToken.tokenN2[i];
-            play.pool.listToken.tokenN1[i] = play.pool.listToken.tokenN1[idx];
-            play.pool.listToken.tokenN2[i] = play.pool.listToken.tokenN2[idx];
-            play.pool.listToken.tokenN1[idx] = tmp1;
-            play.pool.listToken.tokenN2[idx] = tmp2;
+            tmp1 = play.pool.listToken[i].token1;
+            tmp2 = play.pool.listToken[i].token2;
+            play.pool.listToken[i].token1 = play.pool.listToken[idx].token1;
+            play.pool.listToken[i].token2 = play.pool.listToken[idx].token2;
+            play.pool.listToken[idx].token1 = tmp1;
+            play.pool.listToken[idx].token2 = tmp2;
         }
     }
 }
 
-string convertArrayTokenToString(tArrayToken xs, short int maxNumber) {
-    string returnstring;
-    for (int temp = 0; temp < maxNumber; temp++)
-        returnstring += toStr(xs[temp]);
-    return returnstring;
-}
+//string convertArrayTokenToString(tArrayToken xs, short int maxNumber) {
+    //string returnstring;
+    //for (int temp = 0; temp < maxNumber; temp++)
+        //returnstring += toStr(xs[temp]);
+    //return returnstring;
+//}
 
-void convertStringToArray(string el, int num, tArrayToken arr) {
-    for (int i = 0; i < num; ++i) {
-        arr[i] = el[i] - '0';
-    }
-}
+//void convertStringToArray(string el, int num, tArrayToken arr) {
+    //for (int i = 0; i < num; ++i) {
+        //arr[i] = el[i] - '0';
+    //}
+//}
 
 void readListToken(ifstream& archivo, tListToken& listToken) {
 	for (int i = 0; i < listToken.cont; i++)
