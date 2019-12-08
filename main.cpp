@@ -375,7 +375,7 @@ int main(int argc, const char * argv[]) {
 	}
     
     for (int option = 0; option != 4;) {
-        showBoard(plsy, board);
+        showBoard(play, board);
         option = showMenu();
         short int chosen;
 
