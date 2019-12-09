@@ -97,36 +97,36 @@ string poolToStr(tListToken pool) {
     return str;
 }
 
-bool canPutLeft(string board, short int tokenN1, short int tokenN2) {
-    return (board[1]-0x30==tokenN2);
+bool canPutLeft(string board, tToken token) {
+    return (board[1]-0x30==token.token2);
 }
 
-bool canPutRight(string board, short int tokenN1, short int tokenN2) {
-    return (board[board.size()-2]-0x30==tokenN1);
-}
-
-
-string putTokenLeft(string board, short int tokenN1, short int tokenN2) {
-    return tokenToStr(tokenN1, tokenN2) + board;
-}
-
-string putTokenRight(string board, short int tokenN1, short int tokenN2) {
-    return board + tokenToStr(tokenN1, tokenN2);
+bool canPutRight(string board, tToken token) {
+    return (board[board.size()-2]-0x30==token.token1);
 }
 
 
-void deleteToken (tArrayToken tokenN1, tArrayToken tokenN2, short int& numPlayerToken, short int numToken) {
+string putTokenLeft(string board, tToken token) {
+    return tokenToStr(token.token1, token.token2) + board;
+}
+
+string putTokenRight(string board, tToken token) {
+    return board + tokenToStr(token.token1, token.token2);
+}
+
+
+void deleteToken (tToken token, short int& numPlayerToken, short int numToken) {
     for(int i = numToken; i < numPlayerToken; i++) {
-        tokenN1[i] = tokenN1[i+1];
-        tokenN2[i] = tokenN2[i+1];
+        token[i].token1 = token[i+1].token1;
+        token[i].token2 = token[i+1].token2;
     }
     numPlayerToken--;
 }
 
-void drawTokens (tArrayToken pool1, tArrayToken pool2, short int& cont, short int& tokenN1, short int& tokenN2) {
-	tokenN1 = pool1[cont-1];
-	tokenN2 = pool2[cont-1];
-	cont--;
+void drawTokens (tListToken pool, tToken token) {
+	token.token1 = pool.listToken[cont-1].token1;
+	token.token2 = pool.listToken[cont-1].token2;
+	pool.cont--;
 }
 
 // Tablero
