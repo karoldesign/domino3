@@ -45,7 +45,7 @@ typedef struct {
 
 int maxNumber = 0;
 
-string toStr(int n) {
+string toStr (int n) {
     switch (n) {
         case 0:
             return "0";
@@ -72,7 +72,7 @@ string toStr(int n) {
     }
 }
 
-int maxNumTokens(tPlay play)
+int maxNumTokens (tPlay play)
 {
 	int sum = 0;
 	for (int i = 1; i <= play.maxNumber+1; i++)
@@ -82,13 +82,13 @@ int maxNumTokens(tPlay play)
 }
 
 // Token
-string tokenToStr(short int left, short int right) {
+string tokenToStr (short int left, short int right) {
     string str = "|" + toStr(left) + "-" + toStr(right) + "|";
     return str;
 }
 
 // painting pool
-string poolToStr(tListToken pool) {
+string poolToStr (tListToken pool) {
     string str;
     
     for ( int i = 0; i < pool.cont; i++ ) {
@@ -97,20 +97,20 @@ string poolToStr(tListToken pool) {
     return str;
 }
 
-bool canPutLeft(string board, short int token) {
+bool canPutLeft (string board, short int token) {
     return (board[1]-0x30==token);
 }
 
-bool canPutRight(string board, short int token) {
+bool canPutRight (string board, short int token) {
     return (board[board.size()-2]-0x30==token);
 }
 
 
-string putTokenLeft(string board, tToken token) {
+string putTokenLeft (string board, tToken token) {
     return tokenToStr(token.token1, token.token2) + board;
 }
 
-string putTokenRight(string board, tToken token) {
+string putTokenRight (string board, tToken token) {
     return board + tokenToStr(token.token1, token.token2);
 }
 
@@ -130,23 +130,20 @@ void drawTokens (tListToken pool, tToken token) {
 }
 
 // Tablero
-void showBoard(tPlay play, string board) {
+void showBoard (tPlay play, string board) {
     cout << " -------------------- " << endl;
     cout << "|       TABLERO      |" << endl;
     cout << " -------------------- " << endl;
     cout << board << endl << endl;
-	if (muestraFichasMaquina)
-	{
-		for (int i = 0; i < play.numbersPlayers - 1; i++)
-		{
+
+	if (muestraFichasMaquina) {
+		for (int i = 0; i < play.numbersPlayers - 1; i++) {
 			cout << "Maquina#" << i + 1 << ": " << poolToStr(play.players[i+1]) << endl;
 		}
 
 	}
-	else
-	{
-		for (int i = 0; i < play.numbersPlayers - 1; i++)
-		{
+	else {
+		for (int i = 0; i < play.numbersPlayers - 1; i++) {
 			cout << "Maquina#" << i + 1 << ": " << play.players[i+1].cont << " fichas." << endl;
 		}
 	}
@@ -157,7 +154,7 @@ void showBoard(tPlay play, string board) {
 }
 
 // Menú
-int showMenu() {
+int showMenu () {
     char chooseOption = '0';
     
     while (chooseOption < '1' || chooseOption > '4') {
@@ -177,11 +174,11 @@ int showMenu() {
 }
 
 // aleat
-short int aleat(int n) {
+short int aleat (int n) {
     return rand()%(n+1);
 }
 
-short int chooseToken(tToken token, int numPlayerToken) {
+short int chooseToken (tToken token, int numPlayerToken) {
     int chooseToken = 0;
 
     for(int i = 0; i < numPlayerToken; i++) {
@@ -195,7 +192,7 @@ short int chooseToken(tToken token, int numPlayerToken) {
     return chooseToken-1;
 }
 
-short int chooseMax() {
+short int chooseMax () {
     int chooseMax = 0;
     
     while (chooseMax < 6 || chooseMax > 9) {
@@ -205,7 +202,7 @@ short int chooseMax() {
     return chooseMax;
 }
 
-bool chooseSave() {
+bool chooseSave () {
     char option = ' ';
     
     while (option != 'S' && option != 'N') {
@@ -216,7 +213,7 @@ bool chooseSave() {
     return option == 'S';
 }
 
-bool openFile() {
+bool openFile () {
     char option = ' ';
     
     while (option != 'S' && option != 'N') {
@@ -227,7 +224,7 @@ bool openFile() {
     return option == 'S';
 }
 
-void generatePool(tPlay play) {
+void generatePool (tPlay play) {
     int k = 0;
     for ( int i = 0; i <= play.maxNumber; i++ ) {
         for ( int j = 0; j <= i; j++ ) {
@@ -238,7 +235,7 @@ void generatePool(tPlay play) {
     }
 }
 
-void disorderPool(tPlay play) {
+void disorderPool (tPlay play) {
     int idx;
     short int tmp1, tmp2;
         for (int i = maxNumTokens(play) - 1; i >= 0; i--) {
@@ -254,7 +251,7 @@ void disorderPool(tPlay play) {
     }
 }
 
-void readListToken(ifstream& archivo, tListToken& listToken) {
+void readListToken (ifstream& archivo, tListToken& listToken) {
 	for (int i = 0; i < listToken.cont; i++)
 	{
 		archivo >> listToken.listToken[i].token1;
@@ -333,6 +330,26 @@ bool canDrawToken(string board, tListToken token, int numPlayerToken) {
     return true;
 }
 
+bool isGameOver(tPlay& play) {
+    for (int j = 0; j < play.numbersPlayers; j++) {
+        // tiene fichas
+        if (play.players[j].token1.length) {
+            return true;
+        }
+        
+        // puede colocar a la izquierda o a la derecha
+        if (!canDrawToken(board, token, numPlayerToken)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool strategy1(tPlay& play, int player) {
+
+}
+
 void init(tPlay& play, int& numPlayerToken) {
     maxNumber = chooseMax();
 
@@ -369,6 +386,11 @@ int main(int argc, const char * argv[]) {
         showBoard(play, board);
         option = showMenu();
         short int chosen;
+
+        if (isGameOver(play)) {
+            cout << "¡Sin salida!" << endl;
+            return 0;
+        }
 
         switch(option) {
             case 1:
