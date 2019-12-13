@@ -395,12 +395,12 @@ int main(int argc, const char * argv[]) {
         switch(option) {
             case 1:
                 chosen = chooseToken(token, numPlayerToken);
-                if (canPutLeft(board, token[chosen].token1)) {
-                    board = putTokenLeft(board, token[chosen]);
+                if (canPutLeft(board, play.players[turn].listToken[chosen].token1)) {
+                    board = putTokenLeft(board, play.players[turn].listToken[chosen].token1);
                     deleteToken(token, numPlayerToken, chosen);
                     counter++;
-                } else if (canPutLeft(board, token[chosen].token2)) {
-                    board = putTokenLeft(board, token[chosen]);
+                } else if (canPutLeft(board, play.players[turn].listToken[chosen].token2)) {
+                    board = putTokenLeft(board, play.players[turn].listToken[chosen].token2);
                     deleteToken(token, numPlayerToken, chosen);
                     counter++;
                 } else {
@@ -409,11 +409,11 @@ int main(int argc, const char * argv[]) {
                 break;
             case 2: 
                 chosen = chooseToken(token, numPlayerToken);
-                if (canPutRight(board, token[chosen].token1)) {
-                    board = putTokenRight(board, token[chosen]);
+                if (canPutRight(board, play.players[turn].listToken[chosen].token1)) {
+                    board = putTokenRight(board, play.players[turn].listToken[chosen].token1);
                     deleteToken(token, numPlayerToken, chosen);
-                } else if (canPutRight(board, token[chosen].token2)) {
-                    board = putTokenRight(board, token[chosen]);
+                } else if (canPutRight(board, play.players[turn].listToken[chosen].token2)) {
+                    board = putTokenRight(board, play.players[turn].listToken[chosen].token2);
                     deleteToken(token, numPlayerToken, chosen);
                 } else {
                     cout << " ERROR! :-( " << endl;
