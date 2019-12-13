@@ -38,6 +38,7 @@ typedef int tPoints[MAX_PLAYERS];
 typedef struct {
     int numbersPlayers;
     int maxNumber;
+    int playerTurn;
     tListToken pool;
 	tPlayers players;
     tPoints points;
@@ -252,8 +253,7 @@ void disorderPool (tPlay play) {
 }
 
 void readListToken (ifstream& archivo, tListToken& listToken) {
-	for (int i = 0; i < listToken.cont; i++)
-	{
+	for (int i = 0; i < listToken.cont; i++) {
 		archivo >> listToken.listToken[i].token1;
 		archivo >> listToken.listToken[i].token2;
 	}
@@ -273,8 +273,8 @@ bool readGame(tPlay play, string& board) {
     archivo >> board;
 	archivo >> play.pool.cont ;
     readListToken(archivo, play.pool);
-	for (int i = 0; i < play.numbersPlayers; i++)
-	{
+
+	for (int i = 0; i < play.numbersPlayers; i++) {
 		archivo >> play.players[i].cont;
 		readListToken(archivo, play.players[i]);
 		archivo >> play.points[i];
@@ -286,8 +286,7 @@ bool readGame(tPlay play, string& board) {
 }
 
 void writeListToken(ofstream& archivo, tListToken& listToken) {
-	for (int i = 0; i < listToken.cont; i++)
-	{
+	for (int i = 0; i < listToken.cont; i++) {
 		archivo << listToken.listToken[i].token1 << " " << listToken.listToken[i].token2 << " ";
 	}
 	archivo << endl;
@@ -296,13 +295,13 @@ void writeListToken(ofstream& archivo, tListToken& listToken) {
 void writeGame(tPlay play, string board) {
     ofstream file;
     file.open("domino_save.txt", ios::out);
+
     if (file.is_open()) {
     file << play.numbersPlayers << " " << play.maxNumber <<endl
 		<< board << endl
         << play.pool.cont << endl;
 		writeListToken(file, play.pool);
-		for (int i = 0; i < play.numbersPlayers; i++)
-		{
+		for (int i = 0; i < play.numbersPlayers; i++) {
 			file << play.players[i].cont << endl;
 			writeListToken(file, play.players[i]);
 			file << play.points[i] << endl;
@@ -350,6 +349,10 @@ bool strategy1(tPlay& play, int player) {
 
 }
 
+int playerTurn(tPlay& play) {
+
+}
+
 void init(tPlay& play, int& numPlayerToken) {
     maxNumber = chooseMax();
 
@@ -374,6 +377,7 @@ int main(int argc, const char * argv[]) {
     tPlay play;
     string board;
     tListToken token;
+    int turn;
     int numPlayerToken;
     srand(time(NULL));
 
@@ -391,6 +395,8 @@ int main(int argc, const char * argv[]) {
             cout << "¡Sin salida!" << endl;
             return 0;
         }
+
+        turn = playerTurn();
 
         switch(option) {
             case 1:
