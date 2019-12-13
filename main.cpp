@@ -345,10 +345,12 @@ bool isGameOver(tPlay& play) {
     return false;
 }
 
+// Estrategia para las maquinas
 bool strategy1(tPlay& play, int player) {
 
 }
 
+// organiza los turnos
 int playerTurn(tPlay& play) {
 
 }
