@@ -38,7 +38,6 @@ typedef int tPoints[MAX_PLAYERS];
 typedef struct {
     int numbersPlayers;
     int maxNumber;
-    int playerTurn;
     tListToken pool;
 	tPlayers players;
     tPoints points;
@@ -347,8 +346,13 @@ bool strategy1(tPlay& play, int player) {
 
 }
 
+// Estrategia para las maquinas
+bool strategy2(tPlay& play, int player) {
+
+}
+
 // organiza los turnos
-void playerTurn(tPlay& play) {
+int playerTurn(tPlay& play, int& index) {
     int maxDoubleToken = -1;
     int firstPlayer = -1;
     for (int j = 0; j < play.numbersPlayers; j++) {
@@ -365,11 +369,12 @@ void playerTurn(tPlay& play) {
     if (maxDoubleToken == -1) {
         init(play);
     }
-    play.playerTurn = firstPlayer;
+    return index;
 }
 
 void init(tPlay& play, int& numPlayerToken) {
-
+    
+        int index;
 		generatePool(play);
 		disorderPool(play);
 		numPlayerToken = 7;
@@ -384,7 +389,7 @@ void init(tPlay& play, int& numPlayerToken) {
 			}
 		}
 
-        playerTurn(play);
+        playerTurn(play, index);
 
 		play.pool.cont--;
 }
