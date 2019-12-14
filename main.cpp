@@ -214,17 +214,6 @@ bool chooseSave () {
     return option == 'S';
 }
 
-bool openFile () {
-    char option = ' ';
-    
-    while (option != 'S' && option != 'N') {
-        cout << "¿Quiéres abrir un archivo anterior? (S/N)";
-        cin >> option;
-    }
-    
-    return option == 'S';
-}
-
 short int choosePlayers () {
     int players = 0;
     
@@ -513,16 +502,24 @@ void showPoints(tPlay& play) {
         cout << "Jugador: " << play.points[0] << endl;
 }
 
-bool nextRound() {
-
+bool question_S_N (string text) {
+    char option = ' ';
+    
+    while (option != 'S' && option != 'N') {
+        cout << text;
+        cin >> option;
+    }
+    
+    return option == 'S';
 }
+
 
 int main(int argc, const char * argv[]) {
     tPlay play;
     int turn;
     srand(time(NULL));
 
-	if (!openFile() || !readGame(play, board)) {
+	if (!question_S_N("¿Quiéres abrir un archivo anterior? (S/N)") || !readGame(play, board)) {
         init(play, turn);
     }
     
@@ -556,7 +553,7 @@ int main(int argc, const char * argv[]) {
         showWinner(play);
         showPoints(play);
 
-    } while (nextRound());
+    } while (question_S_N("¿Quieres jugar otra ronda?"));
 
 
     
