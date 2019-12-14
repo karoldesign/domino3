@@ -384,7 +384,7 @@ int playerTurn(tPlay& play, int& index) {
     return index;
 }
 
-void init(tPlay& play, int& numPlayerToken) {
+void init(tPlay& play, int& player) {
     
 		generatePool(play);
 		disorderPool(play);
@@ -399,10 +399,9 @@ void init(tPlay& play, int& numPlayerToken) {
 				play.pool.cont--;
 			}
 		}
-
-        playerTurn(play, index);
-
 		play.pool.cont--;
+        
+        playerTurn(play, index);
 }
 
 int main(int argc, const char * argv[]) {
@@ -416,7 +415,7 @@ int main(int argc, const char * argv[]) {
 
 	if (!openFile() || !readGame(play, board)) {
         play.maxNumber = chooseMax();
-        init(play, numPlayerToken);
+        init(play, turn);
 		board = tokenToStr(play.listToken[play.pool.cont-1].token1,play.listToken[play.pool.cont-1].token2);
 	}
     
@@ -429,8 +428,6 @@ int main(int argc, const char * argv[]) {
             cout << "¡Sin salida!" << endl;
             return 0;
         }
-
-        turn = playerTurn(play, index);
 
         switch(option) {
             case 1:
