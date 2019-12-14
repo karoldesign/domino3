@@ -400,7 +400,7 @@ void init(tPlay& play, int& player) {
 			}
 		}
 		play.pool.cont--;
-        
+
         playerTurn(play, index);
 }
 
@@ -416,8 +416,8 @@ int main(int argc, const char * argv[]) {
 	if (!openFile() || !readGame(play, board)) {
         play.maxNumber = chooseMax();
         init(play, turn);
-		board = tokenToStr(play.listToken[play.pool.cont-1].token1,play.listToken[play.pool.cont-1].token2);
-	}
+        board = tokenToStr(play.listToken[play.pool.cont-1].token1,play.listToken[play.pool.cont-1].token2);
+    }
     
     for (int option = 0; option != 4;) {
         showBoard(play, board);
