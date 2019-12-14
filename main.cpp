@@ -439,6 +439,53 @@ void init(tPlay& play, int& player) {
         putToken(play, player, index);
 }
 
+void realPlayerOption(tPlay& play) {
+    for (int option = 0; option != 4;) {
+        showBoard(play);
+        option = showMenu();
+        short int chosen;
+
+        if (isGameOver(play)) {
+            cout << "¡Sin salida!" << endl;
+            return 0;
+        }
+
+        switch(option) {
+            case 1:
+                chosen = chooseToken(play.players[turn]);
+                if (canPutLeft(play.players[turn].listToken[chosen].token1)) {
+                    putTokenLeft(play.players[turn].listToken[chosen].token1, play.players[turn].listToken[chosen].token2);
+                    deleteToken(play.players[turn], chosen);
+                } else if (canPutLeft(play.players[turn].listToken[chosen].token2)) {
+                    putTokenLeft(play.players[turn].listToken[chosen].token2, play.players[turn].listToken[chosen].token1);
+                    deleteToken(play.players[turn], chosen);
+                } else {
+                    cout << " ERROR! :-( " << endl;
+                }
+                break;
+            case 2: 
+                chosen = chooseToken(play.players[turn]);
+                if (canPutRight(play.players[turn].listToken[chosen].token1)) {
+                    putTokenRight(play.players[turn].listToken[chosen].token1, play.players[turn].listToken[chosen].token2);
+                    deleteToken(play.players[turn], chosen);
+                } else if (canPutRight(play.players[turn].listToken[chosen].token2)) {
+                    putTokenRight(play.players[turn].listToken[chosen].token2, play.players[turn].listToken[chosen].token1);
+                    deleteToken(play.players[turn], chosen);
+                } else {
+                    cout << " ERROR! :-( " << endl;
+                }
+                break;
+            case 3:
+                if (canDrawToken(play.players[0])) {
+                    drawTokens(play.pool, play.players[0]);
+                } else {
+                    cout << ">> Tienes fichas que puedes utilizar! :-) <<" << endl;
+                }
+                break;
+        }
+    }
+}
+
 int main(int argc, const char * argv[]) {
     tPlay play;
     int turn;
@@ -448,54 +495,19 @@ int main(int argc, const char * argv[]) {
         init(play, turn);
     }
     
-    for(; (turn+1)% ){
-        for (int option = 0; option != 4;) {
-            showBoard(play);
-            option = showMenu();
-            short int chosen;
-
-            if (isGameOver(play)) {
-                cout << "¡Sin salida!" << endl;
-                return 0;
-            }
-
-            switch(option) {
-                case 1:
-                    chosen = chooseToken(play.players[turn]);
-                    if (canPutLeft(play.players[turn].listToken[chosen].token1)) {
-                        putTokenLeft(play.players[turn].listToken[chosen].token1, play.players[turn].listToken[chosen].token2);
-                        deleteToken(play.players[turn], chosen);
-                    } else if (canPutLeft(play.players[turn].listToken[chosen].token2)) {
-                        putTokenLeft(play.players[turn].listToken[chosen].token2, play.players[turn].listToken[chosen].token1);
-                        deleteToken(play.players[turn], chosen);
-                    } else {
-                        cout << " ERROR! :-( " << endl;
-                    }
-                    break;
-                case 2: 
-                    chosen = chooseToken(play.players[turn]);
-                    if (canPutRight(play.players[turn].listToken[chosen].token1)) {
-                        putTokenRight(play.players[turn].listToken[chosen].token1, play.players[turn].listToken[chosen].token2);
-                        deleteToken(play.players[turn], chosen);
-                    } else if (canPutRight(play.players[turn].listToken[chosen].token2)) {
-                        putTokenRight(play.players[turn].listToken[chosen].token2, play.players[turn].listToken[chosen].token1);
-                        deleteToken(play.players[turn], chosen);
-                    } else {
-                        cout << " ERROR! :-( " << endl;
-                    }
-                    break;
-                case 3:
-                    if (canDrawToken(play.players[0])) {
-                        drawTokens(play.pool, play.players[0]);
-                    } else {
-                        cout << ">> Tienes fichas que puedes utilizar! :-) <<" << endl;
-                    }
-                    break;
-            }
+    for(; ; turn = (turn+1)%play.numbersPlayers) {
+        switch(turn) {
+            case 0:
+                realPlayerOption(play);
+                break;
+            case 1:
+                break;
+            default:
+                break;
         }
 
-    }
 
+    }
     
     if (chooseSave()) {
         writeGame(play);
