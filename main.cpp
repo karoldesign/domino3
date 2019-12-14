@@ -19,6 +19,7 @@ using namespace std;
 string board;
 const int numToken = 55;
 const int MAX_PLAYERS = 4;
+const int INITIAL_TOKENS = 7;
 bool muestraFichasMaquina = true;
 
 typedef struct {
@@ -96,40 +97,40 @@ string poolToStr (tListToken pool) {
     return str;
 }
 
-bool canPutLeft (string board, short int token) {
+bool canPutLeft (short int token) {
     return (board[1]-0x30==token);
 }
 
-bool canPutRight (string board, short int token) {
+bool canPutRight (short int token) {
     return (board[board.size()-2]-0x30==token);
 }
 
 
-string putTokenLeft (string board, tToken token) {
-    return tokenToStr(token.token1, token.token2) + board;
+void putTokenLeft (short int token1, short int token2) {
+    board = tokenToStr(token1, token2) + board;
 }
 
-string putTokenRight (string board, tToken token) {
-    return board + tokenToStr(token.token1, token.token2);
+void putTokenRight (short int token1, short int token2) {
+    board = board + tokenToStr(token1, token2);
 }
 
 
-void deleteToken (tToken token, short int& numPlayerToken, short int numToken) {
-    for(int i = numToken; i < numPlayerToken; i++) {
-        token[i].token1 = token[i+1].token1;
-        token[i].token2 = token[i+1].token2;
+void deleteToken (tListToken token, short int numToken) {
+    for(int i = numToken; i < token.cont; i++) {
+        token.listToken[i].token1 = token.listToken[i+1].token1;
+        token.listToken[i].token2 = token.listToken[i+1].token2;
     }
-    numPlayerToken--;
+    token.cont--;
 }
 
 void drawTokens (tListToken pool, tToken token) {
-	token.token1 = pool.listToken[cont-1].token1;
-	token.token2 = pool.listToken[cont-1].token2;
+	token.token1 = pool.listToken[pool.cont-1].token1;
+	token.token2 = pool.listToken[pool.cont-1].token2;
 	pool.cont--;
 }
 
 // Tablero
-void showBoard (tPlay play, string board) {
+void showBoard (tPlay play) {
     cout << " -------------------- " << endl;
     cout << "|       TABLERO      |" << endl;
     cout << " -------------------- " << endl;
@@ -177,7 +178,7 @@ short int aleat (int n) {
     return rand()%(n+1);
 }
 
-short int chooseToken (tToken token, int numPlayerToken) {
+short int chooseToken (tListToken token, int numPlayerToken) {
     int chooseToken = 0;
 
     for(int i = 0; i < numPlayerToken; i++) {
@@ -290,7 +291,7 @@ void writeListToken(ofstream& archivo, tListToken& listToken) {
 	archivo << endl;
 }
 
-void writeGame(tPlay play, string board) {
+void writeGame(tPlay play) {
     ofstream file;
     file.open("domino_save.txt", ios::out);
 
@@ -313,13 +314,13 @@ void writeGame(tPlay play, string board) {
 }
 
 
-bool canDrawToken(string board, tListToken token, int numPlayerToken) {
+bool canDrawToken(tListToken tokens) {
     bool canPutLeftBool = true;
     bool canPutRightBool = true;
 
-    for (int i = 0; i < numPlayerToken; i++) {
-        canPutLeftBool = canPutLeft(board, token.listToken[i].token1, token.listToken[i].token2) || canPutLeft(board, token.listToken[i].token2, token.listToken[i].token1);
-        canPutRightBool = canPutRight(board, token.listToken[i].token1, token.listToken[i].token2) || canPutRight(board, token.listToken[i].token2, token.listToken[i].token1);
+    for (int i = 0; i < tokens.cont; i++) {
+        canPutLeftBool = canPutLeft(tokens.listToken[i].token1) || canPutLeft(tokens.listToken[i].token2);
+        canPutRightBool = canPutRight(tokens.listToken[i].token1) || canPutRight(tokens.listToken[i].token2);
         if (canPutLeftBool || canPutRightBool) {
             return false;
         }
@@ -335,7 +336,7 @@ bool isGameOver(tPlay& play) {
 
     for (int j = 0; j < play.numbersPlayers; j++) {
         // puede colocar a la izquierda o a la derecha
-        if (!canDrawToken(board, token, numPlayerToken)) {
+        if (!canDrawToken(play.players[j])) {
             return true;
         }
     }
@@ -346,18 +347,22 @@ bool isGameOver(tPlay& play) {
 // Estrategia para las maquinas
 bool strategy1(tPlay& play, int player) {
 
-    for (int i = 0; i < numPlayerToken; i++) {
-        if (canPutLeft(board, token.listToken[i].token1, token.listToken[i].token2) 
-            || canPutLeft(board, token.listToken[i].token2, token.listToken[i].token1)) {
-                putTokenLeft()
+    for (int i = 0; i < play.players[player].cont; i++) {
+        if (canPutLeft(play.players[player].listToken[i].token1)) {
+            putTokenLeft(play.players[player].listToken[i].token1, play.players[player].listToken[i].token2);
+            return true;
+        } else if(canPutLeft(play.players[player].listToken[i].token2)) {
+            putTokenLeft(play.players[player].listToken[i].token2, play.players[player].listToken[i].token1);
+            return true;
+        } else if ( canPutRight(play.players[player].listToken[i].token1)) {
+            putTokenRight(play.players[player].listToken[i].token1, play.players[player].listToken[i].token2);
+            return true;
+        } else if (canPutRight(play.players[player].listToken[i].token2)) {
+            putTokenRight(play.players[player].listToken[i].token2, play.players[player].listToken[i].token1);
+            return true;
         }
-        
-        if ( canPutRight(board, token.listToken[i].token1, token.listToken[i].token2) 
-            || canPutRight(board, token.listToken[i].token2, token.listToken[i].token1)) {
-
-        }
-
     }
+    return false;
 }
 
 // Estrategia para las maquinas
@@ -370,10 +375,10 @@ int playerTurn(tPlay& play, int& index) {
     int maxDoubleToken = -1;
     int firstPlayer = -1;
     for (int j = 0; j < play.numbersPlayers; j++) {
-        for (int i = 0; i < numPlayerToken; i++) {
-            if(player.players[j].listToken[i].token1 == play.players[j].listToken[i].token2) {
-                if ( maxDoubleToken < player.players[j].listToken[i].token1) {
-                    maxDoubleToken = player.players[j].listToken[i].token1;
+        for (int i = 0; i < play.players[j].cont; i++) {
+            if(play.players[j].listToken[i].token1 == play.players[j].listToken[i].token2) {
+                if ( maxDoubleToken < play.players[j].listToken[i].token1) {
+                    maxDoubleToken = play.players[j].listToken[i].token1;
                     firstPlayer = j;
                 }
             }
@@ -385,13 +390,13 @@ int playerTurn(tPlay& play, int& index) {
 
 void init(tPlay& play, int& player) {
     
+        int index;
 		generatePool(play);
 		disorderPool(play);
-		numPlayerToken = 7;
 		play.pool.cont = maxNumTokens(play);
 
 		for (int j = 0; j < play.numbersPlayers; j++) {
-			for (int i = 0; i < numPlayerToken; i++) {
+			for (int i = 0; i < INITIAL_TOKENS; i++) {
 				play.players[j].listToken[i].token1 = play.pool.listToken[play.pool.cont-1].token1;
 				play.players[j].listToken[i].token2 = play.pool.listToken[play.pool.cont-1].token2;
 				play.players[j].cont++;
@@ -399,7 +404,7 @@ void init(tPlay& play, int& player) {
 			}
 		}
 		play.pool.cont--;
-        board = tokenToStr(play.listToken[play.pool.cont-1].token1,play.listToken[play.pool.cont-1].token2);
+        board = tokenToStr(play.pool.listToken[play.pool.cont-1].token1,play.pool.listToken[play.pool.cont-1].token2);
 
         player = playerTurn(play, index);
 
@@ -411,9 +416,7 @@ void init(tPlay& play, int& player) {
 int main(int argc, const char * argv[]) {
     tPlay play;
     tListToken token;
-    int index;
     int turn;
-    int numPlayerToken;
     srand(time(NULL));
 
 	if (!openFile() || !readGame(play, board)) {
@@ -422,7 +425,7 @@ int main(int argc, const char * argv[]) {
     }
     
     for (int option = 0; option != 4;) {
-        showBoard(play, board);
+        showBoard(play);
         option = showMenu();
         short int chosen;
 
@@ -434,12 +437,12 @@ int main(int argc, const char * argv[]) {
         switch(option) {
             case 1:
                 chosen = chooseToken(token, numPlayerToken);
-                if (canPutLeft(board, play.players[turn].listToken[chosen].token1)) {
-                    board = putTokenLeft(board, play.players[turn].listToken[chosen].token1);
+                if (canPutLeft(play.players[turn].listToken[chosen].token1)) {
+                    putTokenLeft(play.players[turn].listToken[chosen].token1, play.players[turn].listToken[chosen].token2);
                     deleteToken(token, numPlayerToken, chosen);
                     counter++;
-                } else if (canPutLeft(board, play.players[turn].listToken[chosen].token2)) {
-                    board = putTokenLeft(board, play.players[turn].listToken[chosen].token2);
+                } else if (canPutLeft(play.players[turn].listToken[chosen].token2)) {
+                    putTokenLeft(play.players[turn].listToken[chosen].token2, play.players[turn].listToken[chosen].token1);
                     deleteToken(token, numPlayerToken, chosen);
                     counter++;
                 } else {
@@ -448,18 +451,18 @@ int main(int argc, const char * argv[]) {
                 break;
             case 2: 
                 chosen = chooseToken(token, numPlayerToken);
-                if (canPutRight(board, play.players[turn].listToken[chosen].token1)) {
-                    board = putTokenRight(board, play.players[turn].listToken[chosen].token1);
+                if (canPutRight(play.players[turn].listToken[chosen].token1)) {
+                    putTokenRight(play.players[turn].listToken[chosen].token1, play.players[turn].listToken[chosen].token2);
                     deleteToken(token, numPlayerToken, chosen);
-                } else if (canPutRight(board, play.players[turn].listToken[chosen].token2)) {
-                    board = putTokenRight(board, play.players[turn].listToken[chosen].token2);
+                } else if (canPutRight(play.players[turn].listToken[chosen].token2)) {
+                    putTokenRight(play.players[turn].listToken[chosen].token2, play.players[turn].listToken[chosen].token1);
                     deleteToken(token, numPlayerToken, chosen);
                 } else {
                     cout << " ERROR! :-( " << endl;
                 }
                 break;
             case 3:
-                if (canDrawToken(board, token, numPlayerToken)) {
+                if (canDrawToken(token)) {
                     numPlayerToken = numPlayerToken + 1;
                     drawTokens(pool, token[numPlayerToken-1]);
                 } else {
@@ -470,7 +473,7 @@ int main(int argc, const char * argv[]) {
     }
     
     if (chooseSave()) {
-        writeGame(play, board);
+        writeGame(play);
     }
     return 0;
 }
