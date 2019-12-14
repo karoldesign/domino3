@@ -193,36 +193,17 @@ short int chooseToken (tListToken token) {
     return chooseToken-1;
 }
 
-short int chooseMax () {
-    int chooseMax = 0;
+
+short int question_INTER (short int min, short int max, string text) {
+    int element = 0;
     
-    while (chooseMax < 6 || chooseMax > 9) {
-        cout << "Variante del juego (entre 6 y 9): ";
-        cin >> chooseMax;
+    while (element < min || element > max) {
+        cout << text;
+        cin >> element;
     }
-    return chooseMax;
+    return element;
 }
 
-bool chooseSave () {
-    char option = ' ';
-    
-    while (option != 'S' && option != 'N') {
-        cout << "¿Quiéres guardar antes de salir? (S/N)";
-        cin >> option;
-    }
-    
-    return option == 'S';
-}
-
-short int choosePlayers () {
-    int players = 0;
-    
-    while (players < 2 || players > 4) {
-        cout << "Elige número de jugadores(entre 2 y 4): ";
-        cin >> players;
-    }
-    return players;
-}
 
 void generatePool (tPlay play) {
     int k = 0;
@@ -399,8 +380,8 @@ int playerTurn(tPlay& play, int& index) {
 void init(tPlay& play, int& player) {
 
     int index;
-    play.maxNumber = chooseMax();
-    play.numbersPlayers = choosePlayers();
+    play.maxNumber = question_INTER(6, 9, "Variante del juego (entre 6 y 9): ");
+    play.numbersPlayers = question_INTER(2, 4, "Elige número de jugadores(entre 2 y 4): ");
     generatePool(play);
     disorderPool(play);
     play.pool.cont = maxNumTokens(play);
@@ -557,7 +538,7 @@ int main(int argc, const char * argv[]) {
 
 
     
-    if (chooseSave()) {
+    if (question_S_N("¿Quiéres guardar antes de salir? (S/N)")) {
         writeGame(play);
     }
     return 0;
