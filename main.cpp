@@ -385,7 +385,8 @@ bool strategy1(tPlay& play, int player) {
 
 // Estrategia para las maquinas
 bool strategy2(tPlay& play, int player) {
- return false;
+
+    return false;
 }
 
 // organiza los turnos
@@ -408,38 +409,38 @@ int playerTurn(tPlay& play, int& index) {
 
 void init(tPlay& play, int& player) {
 
-        int index;
-        play.maxNumber = chooseMax();
-        play.numbersPlayers = choosePlayers();
-		generatePool(play);
-		disorderPool(play);
-		play.pool.cont = maxNumTokens(play);
+    int index;
+    play.maxNumber = chooseMax();
+    play.numbersPlayers = choosePlayers();
+    generatePool(play);
+    disorderPool(play);
+    play.pool.cont = maxNumTokens(play);
 
-		for (int j = 0; j < play.numbersPlayers; j++) {
-			for (int i = 0; i < INITIAL_TOKENS; i++) {
-				play.players[j].listToken[i].token1 = play.pool.listToken[play.pool.cont-1].token1;
-				play.players[j].listToken[i].token2 = play.pool.listToken[play.pool.cont-1].token2;
-				play.players[j].cont++;
-				play.pool.cont--;
-			}
-		}
-		play.pool.cont--;
-        board = tokenToStr(play.pool.listToken[play.pool.cont-1].token1,play.pool.listToken[play.pool.cont-1].token2);
-
-        player = playerTurn(play, index);
-
-        if (player == 0) {
-            return;
+    for (int j = 0; j < play.numbersPlayers; j++) {
+        for (int i = 0; i < INITIAL_TOKENS; i++) {
+            play.players[j].listToken[i].token1 = play.pool.listToken[play.pool.cont-1].token1;
+            play.players[j].listToken[i].token2 = play.pool.listToken[play.pool.cont-1].token2;
+            play.players[j].cont++;
+            play.pool.cont--;
         }
+    }
+    play.pool.cont--;
+    board = tokenToStr(play.pool.listToken[play.pool.cont-1].token1,play.pool.listToken[play.pool.cont-1].token2);
 
-        if (player == -1) {
-            init(play, player);
-        }
+    player = playerTurn(play, index);
 
-        putToken(play, player, index);
+    if (player == 0) {
+        return;
+    }
+
+    if (player == -1) {
+        init(play, player);
+    }
+
+    putToken(play, player, index);
 }
 
-void realPlayerOption(tPlay& play) {
+bool realPlayerOption(tPlay& play) {
     for (int option = 0; option != 4;) {
         showBoard(play);
         option = showMenu();
@@ -447,43 +448,54 @@ void realPlayerOption(tPlay& play) {
 
         if (isGameOver(play)) {
             cout << "¡Sin salida!" << endl;
-            return 0;
+            return false;
         }
 
         switch(option) {
             case 1:
-                chosen = chooseToken(play.players[turn]);
-                if (canPutLeft(play.players[turn].listToken[chosen].token1)) {
-                    putTokenLeft(play.players[turn].listToken[chosen].token1, play.players[turn].listToken[chosen].token2);
-                    deleteToken(play.players[turn], chosen);
-                } else if (canPutLeft(play.players[turn].listToken[chosen].token2)) {
-                    putTokenLeft(play.players[turn].listToken[chosen].token2, play.players[turn].listToken[chosen].token1);
-                    deleteToken(play.players[turn], chosen);
+                chosen = chooseToken(play.players[0]);
+                if (canPutLeft(play.players[0].listToken[chosen].token1)) {
+                    putTokenLeft(play.players[0].listToken[chosen].token1, play.players[0].listToken[chosen].token2);
+                    deleteToken(play.players[0], chosen);
+                    return true;
+                } else if (canPutLeft(play.players[0].listToken[chosen].token2)) {
+                    putTokenLeft(play.players[0].listToken[chosen].token2, play.players[0].listToken[chosen].token1);
+                    deleteToken(play.players[0], chosen);
+                    return true;
                 } else {
                     cout << " ERROR! :-( " << endl;
                 }
                 break;
             case 2: 
-                chosen = chooseToken(play.players[turn]);
-                if (canPutRight(play.players[turn].listToken[chosen].token1)) {
-                    putTokenRight(play.players[turn].listToken[chosen].token1, play.players[turn].listToken[chosen].token2);
-                    deleteToken(play.players[turn], chosen);
-                } else if (canPutRight(play.players[turn].listToken[chosen].token2)) {
-                    putTokenRight(play.players[turn].listToken[chosen].token2, play.players[turn].listToken[chosen].token1);
-                    deleteToken(play.players[turn], chosen);
+                chosen = chooseToken(play.players[0]);
+                if (canPutRight(play.players[0].listToken[chosen].token1)) {
+                    putTokenRight(play.players[0].listToken[chosen].token1, play.players[0].listToken[chosen].token2);
+                    deleteToken(play.players[0], chosen);
+                    return true;
+                } else if (canPutRight(play.players[0].listToken[chosen].token2)) {
+                    putTokenRight(play.players[0].listToken[chosen].token2, play.players[0].listToken[chosen].token1);
+                    deleteToken(play.players[0], chosen);
+                    return true;
                 } else {
                     cout << " ERROR! :-( " << endl;
                 }
                 break;
             case 3:
                 if (canDrawToken(play.players[0])) {
+                    if (play.pool.cont == 0) {
+                        return true;
+                    }
+
                     drawTokens(play.pool, play.players[0]);
                 } else {
                     cout << ">> Tienes fichas que puedes utilizar! :-) <<" << endl;
                 }
                 break;
         }
+
     }
+
+    return false;
 }
 
 int main(int argc, const char * argv[]) {
@@ -495,14 +507,28 @@ int main(int argc, const char * argv[]) {
         init(play, turn);
     }
     
-    for(; ; turn = (turn+1)%play.numbersPlayers) {
+    for(bool end = false; !end; turn = (turn+1)%play.numbersPlayers) {
         switch(turn) {
             case 0:
-                realPlayerOption(play);
+                end = !realPlayerOption(play);
                 break;
             case 1:
+                while(!strategy2(play, turn)) {
+                    if (play.pool.cont == 0) {
+                       break;
+                    }
+                    
+                    drawTokens(play.pool, play.players[turn]);
+                }
                 break;
             default:
+                while(!strategy1(play, turn)) {
+                    if (play.pool.cont == 0) {
+                       break;
+                    }
+                    
+                    drawTokens(play.pool, play.players[turn]);
+                }
                 break;
         }
 
