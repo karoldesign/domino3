@@ -380,10 +380,7 @@ int playerTurn(tPlay& play, int& index) {
         }
 	}
 
-    if (maxDoubleToken == -1) {
-        init(play);
-    }
-    return index;
+    return firstPlayer;
 }
 
 void init(tPlay& play, int& player) {
@@ -405,6 +402,10 @@ void init(tPlay& play, int& player) {
         board = tokenToStr(play.listToken[play.pool.cont-1].token1,play.listToken[play.pool.cont-1].token2);
 
         player = playerTurn(play, index);
+
+        if (player == -1) {
+            init(play);
+        }
 }
 
 int main(int argc, const char * argv[]) {
