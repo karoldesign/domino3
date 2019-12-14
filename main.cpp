@@ -498,6 +498,25 @@ bool realPlayerOption(tPlay& play) {
     return false;
 }
 
+void showWinner(tPlay& play) {
+    for (int j = 0; j < play.numbersPlayers; j++) {
+        if (play.players[j].cont == 0) {
+            cout << " el jugador " << j << "ha sido el ganador de la ronda" << endl;
+        }
+    }
+}
+
+void showPoints(tPlay& play) {
+    for (int i = 1; i < play.numbersPlayers; i++) {
+        cout << "Maquina#" << i << ": " << play.points[i] << endl;
+	}
+        cout << "Jugador: " << play.points[0] << endl;
+}
+
+bool nextRound() {
+
+}
+
 int main(int argc, const char * argv[]) {
     tPlay play;
     int turn;
@@ -507,33 +526,39 @@ int main(int argc, const char * argv[]) {
         init(play, turn);
     }
     
-    for(bool end = false; !end; turn = (turn+1)%play.numbersPlayers) {
-        switch(turn) {
-            case 0:
-                end = !realPlayerOption(play);
-                break;
-            case 1:
-                while(!strategy2(play, turn)) {
-                    if (play.pool.cont == 0) {
-                       break;
+    do {
+        for(bool end = false; !end; turn = (turn+1)%play.numbersPlayers) {
+            switch(turn) {
+                case 0:
+                    end = !realPlayerOption(play);
+                    break;
+                case 1:
+                    while(!strategy2(play, turn)) {
+                        if (play.pool.cont == 0) {
+                        break;
+                        }
+                        
+                        drawTokens(play.pool, play.players[turn]);
                     }
-                    
-                    drawTokens(play.pool, play.players[turn]);
-                }
-                break;
-            default:
-                while(!strategy1(play, turn)) {
-                    if (play.pool.cont == 0) {
-                       break;
+                    break;
+                default:
+                    while(!strategy1(play, turn)) {
+                        if (play.pool.cont == 0) {
+                        break;
+                        }
+                        
+                        drawTokens(play.pool, play.players[turn]);
                     }
-                    
-                    drawTokens(play.pool, play.players[turn]);
-                }
-                break;
+                    break;
+            }
         }
 
+        showWinner(play);
+        showPoints(play);
 
-    }
+    } while (nextRound());
+
+
     
     if (chooseSave()) {
         writeGame(play);
