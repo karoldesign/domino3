@@ -326,12 +326,12 @@ bool canDrawToken(string board, tListToken token, int numPlayerToken) {
 }
 
 bool isGameOver(tPlay& play) {
+    // tiene fichas
+    if (!play.pool.cont) {
+        return true;
+    }
+
     for (int j = 0; j < play.numbersPlayers; j++) {
-        // tiene fichas
-        if (play.players[j].token1.length) {
-            return true;
-        }
-        
         // puede colocar a la izquierda o a la derecha
         if (!canDrawToken(board, token, numPlayerToken)) {
             return true;
