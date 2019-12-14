@@ -404,7 +404,7 @@ void init(tPlay& play, int& player) {
 		play.pool.cont--;
         board = tokenToStr(play.listToken[play.pool.cont-1].token1,play.listToken[play.pool.cont-1].token2);
 
-        playerTurn(play, index);
+        player = playerTurn(play, index);
 }
 
 int main(int argc, const char * argv[]) {
