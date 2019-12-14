@@ -372,7 +372,7 @@ int playerTurn(tPlay& play, int& index) {
                 }
             }
         }
-	}
+    }
 
     return firstPlayer;
 }
