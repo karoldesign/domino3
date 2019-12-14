@@ -15,6 +15,8 @@
 #include <stdlib.h>
 
 using namespace std;
+
+string board;
 const int numToken = 55;
 const int MAX_PLAYERS = 4;
 bool muestraFichasMaquina = true;
@@ -400,13 +402,13 @@ void init(tPlay& play, int& player) {
 			}
 		}
 		play.pool.cont--;
+        board = tokenToStr(play.listToken[play.pool.cont-1].token1,play.listToken[play.pool.cont-1].token2);
 
         playerTurn(play, index);
 }
 
 int main(int argc, const char * argv[]) {
     tPlay play;
-    string board;
     tListToken token;
     int index;
     int turn;
@@ -416,7 +418,6 @@ int main(int argc, const char * argv[]) {
 	if (!openFile() || !readGame(play, board)) {
         play.maxNumber = chooseMax();
         init(play, turn);
-        board = tokenToStr(play.listToken[play.pool.cont-1].token1,play.listToken[play.pool.cont-1].token2);
     }
     
     for (int option = 0; option != 4;) {
