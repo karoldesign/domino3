@@ -344,6 +344,18 @@ bool isGameOver(tPlay& play) {
 // Estrategia para las maquinas
 bool strategy1(tPlay& play, int player) {
 
+    for (int i = 0; i < numPlayerToken; i++) {
+        if (canPutLeft(board, token.listToken[i].token1, token.listToken[i].token2) 
+            || canPutLeft(board, token.listToken[i].token2, token.listToken[i].token1)) {
+                putTokenLeft()
+        }
+        
+        if ( canPutRight(board, token.listToken[i].token1, token.listToken[i].token2) 
+            || canPutRight(board, token.listToken[i].token2, token.listToken[i].token1)) {
+
+        }
+
+    }
 }
 
 // Estrategia para las maquinas
@@ -374,7 +386,6 @@ int playerTurn(tPlay& play, int& index) {
 
 void init(tPlay& play, int& numPlayerToken) {
     
-        int index;
 		generatePool(play);
 		disorderPool(play);
 		numPlayerToken = 7;
@@ -398,6 +409,7 @@ int main(int argc, const char * argv[]) {
     tPlay play;
     string board;
     tListToken token;
+    int index;
     int turn;
     int numPlayerToken;
     srand(time(NULL));
@@ -418,7 +430,7 @@ int main(int argc, const char * argv[]) {
             return 0;
         }
 
-        turn = playerTurn();
+        turn = playerTurn(play, index);
 
         switch(option) {
             case 1:
