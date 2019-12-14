@@ -344,22 +344,29 @@ bool isGameOver(tPlay& play) {
     return false;
 }
 
+bool putToken(tPlay& play, int player, int token) {
+     if (canPutLeft(play.players[player].listToken[token].token1)) {
+            putTokenLeft(play.players[player].listToken[token].token1, play.players[player].listToken[token].token2);
+            return true;
+        } else if(canPutLeft(play.players[player].listToken[token].token2)) {
+            putTokenLeft(play.players[player].listToken[token].token2, play.players[player].listToken[token].token1);
+            return true;
+        } else if ( canPutRight(play.players[player].listToken[token].token1)) {
+            putTokenRight(play.players[player].listToken[token].token1, play.players[player].listToken[token].token2);
+            return true;
+        } else if (canPutRight(play.players[player].listToken[token].token2)) {
+            putTokenRight(play.players[player].listToken[token].token2, play.players[player].listToken[token].token1);
+            return true;
+        }
+        return false;
+}
+
 // Estrategia para las maquinas
 bool strategy1(tPlay& play, int player) {
 
     for (int i = 0; i < play.players[player].cont; i++) {
-        if (canPutLeft(play.players[player].listToken[i].token1)) {
-            putTokenLeft(play.players[player].listToken[i].token1, play.players[player].listToken[i].token2);
-            return true;
-        } else if(canPutLeft(play.players[player].listToken[i].token2)) {
-            putTokenLeft(play.players[player].listToken[i].token2, play.players[player].listToken[i].token1);
-            return true;
-        } else if ( canPutRight(play.players[player].listToken[i].token1)) {
-            putTokenRight(play.players[player].listToken[i].token1, play.players[player].listToken[i].token2);
-            return true;
-        } else if (canPutRight(play.players[player].listToken[i].token2)) {
-            putTokenRight(play.players[player].listToken[i].token2, play.players[player].listToken[i].token1);
-            return true;
+        if (putToken(play, player, i)) {
+            return true
         }
     }
     return false;
@@ -408,9 +415,15 @@ void init(tPlay& play, int& player) {
 
         player = playerTurn(play, index);
 
+        if (player == 0) {
+            return;
+        }
+
         if (player == -1) {
             init(play);
         }
+
+        putToken(play, player, index);
 }
 
 int main(int argc, const char * argv[]) {
