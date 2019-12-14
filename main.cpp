@@ -123,10 +123,11 @@ void deleteToken (tListToken token, short int numToken) {
     token.cont--;
 }
 
-void drawTokens (tListToken pool, tToken token) {
-	token.token1 = pool.listToken[pool.cont-1].token1;
-	token.token2 = pool.listToken[pool.cont-1].token2;
+void drawTokens (tListToken pool, tListToken player) {
 	pool.cont--;
+	player.listToken[player.cont].token1 = pool.listToken[pool.cont].token1;
+	player.listToken[player.cont].token2 = pool.listToken[pool.cont].token2;
+    player.cont++;
 }
 
 // Tablero
@@ -185,7 +186,7 @@ short int chooseToken (tListToken token) {
         cout << "(" << i+1 << ") " << tokenToStr(token.listToken[i].token1, token.listToken[i].token2) << endl;
     }
     
-    while (chooseToken < 1 || chooseToken > numPlayerToken) {
+    while (chooseToken < 1 || chooseToken > token.cont) {
         cout << "Elije ficha: ";
         cin >> chooseToken;
     }
@@ -374,7 +375,7 @@ bool strategy1(tPlay& play, int player) {
 
 // Estrategia para las maquinas
 bool strategy2(tPlay& play, int player) {
-
+ return false;
 }
 
 // organiza los turnos
@@ -472,9 +473,8 @@ int main(int argc, const char * argv[]) {
                 }
                 break;
             case 3:
-                if (canDrawToken(token)) {
-                    play.players[0].cont = play.players[0].cont + 1;
-                    drawTokens(play.pool, play[play.players[0].cont-1]);
+                if (canDrawToken(play.players[0])) {
+                    drawTokens(play.pool, play.players[0]);
                 } else {
                     cout << ">> Tienes fichas que puedes utilizar! :-) <<" << endl;
                 }
