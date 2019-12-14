@@ -44,8 +44,6 @@ typedef struct {
     tPoints points;
 } tPlay;
 
-int maxNumber = 0;
-
 string toStr (int n) {
     switch (n) {
         case 0:
@@ -73,8 +71,7 @@ string toStr (int n) {
     }
 }
 
-int maxNumTokens (tPlay play)
-{
+int maxNumTokens (tPlay play) {
 	int sum = 0;
 	for (int i = 1; i <= play.maxNumber+1; i++)
 		sum += i;
@@ -351,12 +348,27 @@ bool strategy1(tPlay& play, int player) {
 }
 
 // organiza los turnos
-int playerTurn(tPlay& play) {
+void playerTurn(tPlay& play) {
+    int maxDoubleToken = -1;
+    int firstPlayer = -1;
+    for (int j = 0; j < play.numbersPlayers; j++) {
+        for (int i = 0; i < numPlayerToken; i++) {
+            if(player.players[j].listToken[i].token1 == play.players[j].listToken[i].token2) {
+                if ( maxDoubleToken < player.players[j].listToken[i].token1) {
+                    maxDoubleToken = player.players[j].listToken[i].token1;
+                    firstPlayer = j;
+                }
+            }
+        }
+	}
 
+    if (maxDoubleToken == -1) {
+        init(play);
+    }
+    play.playerTurn = firstPlayer;
 }
 
 void init(tPlay& play, int& numPlayerToken) {
-    maxNumber = chooseMax();
 
 		generatePool(play);
 		disorderPool(play);
@@ -372,6 +384,8 @@ void init(tPlay& play, int& numPlayerToken) {
 			}
 		}
 
+        playerTurn(play);
+
 		play.pool.cont--;
 }
 
@@ -384,6 +398,7 @@ int main(int argc, const char * argv[]) {
     srand(time(NULL));
 
 	if (!openFile() || !readGame(play, board)) {
+        play.maxNumber = chooseMax();
         init(play, numPlayerToken);
 		board = tokenToStr(play.listToken[play.pool.cont-1].token1,play.listToken[play.pool.cont-1].token2);
 	}
