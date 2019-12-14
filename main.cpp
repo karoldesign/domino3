@@ -178,10 +178,10 @@ short int aleat (int n) {
     return rand()%(n+1);
 }
 
-short int chooseToken (tListToken token, int numPlayerToken) {
+short int chooseToken (tListToken token) {
     int chooseToken = 0;
 
-    for(int i = 0; i < numPlayerToken; i++) {
+    for(int i = 0; i < token.cont; i++) {
         cout << "(" << i+1 << ") " << tokenToStr(token.listToken[i].token1, token.listToken[i].token2) << endl;
     }
     
@@ -366,7 +366,7 @@ bool strategy1(tPlay& play, int player) {
 
     for (int i = 0; i < play.players[player].cont; i++) {
         if (putToken(play, player, i)) {
-            return true
+            return true;
         }
     }
     return false;
@@ -420,7 +420,7 @@ void init(tPlay& play, int& player) {
         }
 
         if (player == -1) {
-            init(play);
+            init(play, player);
         }
 
         putToken(play, player, index);
@@ -428,7 +428,6 @@ void init(tPlay& play, int& player) {
 
 int main(int argc, const char * argv[]) {
     tPlay play;
-    tListToken token;
     int turn;
     srand(time(NULL));
 
@@ -449,35 +448,33 @@ int main(int argc, const char * argv[]) {
 
         switch(option) {
             case 1:
-                chosen = chooseToken(token, numPlayerToken);
+                chosen = chooseToken(play.players[turn]);
                 if (canPutLeft(play.players[turn].listToken[chosen].token1)) {
                     putTokenLeft(play.players[turn].listToken[chosen].token1, play.players[turn].listToken[chosen].token2);
-                    deleteToken(token, numPlayerToken, chosen);
-                    counter++;
+                    deleteToken(play.players[turn], chosen);
                 } else if (canPutLeft(play.players[turn].listToken[chosen].token2)) {
                     putTokenLeft(play.players[turn].listToken[chosen].token2, play.players[turn].listToken[chosen].token1);
-                    deleteToken(token, numPlayerToken, chosen);
-                    counter++;
+                    deleteToken(play.players[turn], chosen);
                 } else {
                     cout << " ERROR! :-( " << endl;
                 }
                 break;
             case 2: 
-                chosen = chooseToken(token, numPlayerToken);
+                chosen = chooseToken(play.players[turn]);
                 if (canPutRight(play.players[turn].listToken[chosen].token1)) {
                     putTokenRight(play.players[turn].listToken[chosen].token1, play.players[turn].listToken[chosen].token2);
-                    deleteToken(token, numPlayerToken, chosen);
+                    deleteToken(play.players[turn], chosen);
                 } else if (canPutRight(play.players[turn].listToken[chosen].token2)) {
                     putTokenRight(play.players[turn].listToken[chosen].token2, play.players[turn].listToken[chosen].token1);
-                    deleteToken(token, numPlayerToken, chosen);
+                    deleteToken(play.players[turn], chosen);
                 } else {
                     cout << " ERROR! :-( " << endl;
                 }
                 break;
             case 3:
                 if (canDrawToken(token)) {
-                    numPlayerToken = numPlayerToken + 1;
-                    drawTokens(pool, token[numPlayerToken-1]);
+                    play.players[0].cont = play.players[0].cont + 1;
+                    drawTokens(play.pool, play[play.players[0].cont-1]);
                 } else {
                     cout << ">> Tienes fichas que puedes utilizar! :-) <<" << endl;
                 }
