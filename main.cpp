@@ -6,6 +6,12 @@
 //  Copyright © 2019 Carolina Chamorro. All rights reserved.
 //
 
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__TOS_WIN__) || defined(__WINDOWS__)
+#define COMMAND "cls"
+#else
+#define COMMAND "clear"
+#endif
+
 #include <time.h>
 #include <cstdlib>
 #include <list>
@@ -528,6 +534,7 @@ bool question_S_N (string text) {
 
 
 int main(int argc, const char * argv[]) {
+    system( COMMAND );
     tPlay play;
     int turn = -1;
 	int winner = -1;
