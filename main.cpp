@@ -613,7 +613,13 @@ bool realPlayerOption(tPlay& play) {
 }
 
 void showWinner(int winner) {
-            cout << " el jugador " << winner << " ha sido el ganador de la ronda" << endl;
+    cout << " " << endl;
+    cout << " ------------------------------- " << endl;
+    cout << " el jugador " << winner << endl;
+    cout << " ha sido el ganador de la ronda" << endl;
+    cout << " ------------------------------- " << endl;
+    cout << " " << endl;
+
 }
 
 void showPoints(tPlay play) {
@@ -621,6 +627,7 @@ void showPoints(tPlay play) {
         cout << "Maquina#" << i << ": " << play.points[i] << endl;
 	}
         cout << "Jugador: " << play.points[0] << endl;
+        cout << " " << endl;
 }
 
 void updatePoints(tPlay & play) {
