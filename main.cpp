@@ -6,12 +6,6 @@
 //  Copyright © 2019 Carolina Chamorro. All rights reserved.
 //
 
-#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__TOS_WIN__) || defined(__WINDOWS__)
-#define COMMAND "cls"
-#else
-#define COMMAND "clear"
-#endif
-
 #include <time.h>
 #include <cstdlib>
 #include <list>
@@ -53,6 +47,112 @@ typedef struct {
 	tPlayers players;
     tPoints points;
 } tPlay;
+
+
+// functions for The Domino
+string toStr (int n);
+int maxNumTokens (tPlay play);
+string tokenToStr (short int left, short int right);
+string poolToStr (tListToken pool);
+bool canPutLeft (short int token);
+bool canPutRight (short int token);
+void putTokenLeft (short int token1, short int token2);
+void putTokenRight (short int token1, short int token2);
+void deleteToken (tListToken& token, short int numToken);
+void drawTokens (tListToken& pool, tListToken& player);
+void showBoard (tPlay play);
+int showMenu ();
+short int aleat (int n);
+short int chooseToken (tListToken token);
+short int question_INTER (short int min, short int max, string text);
+void generatePool (tPlay& play);
+void disorderPool (tPlay& play);
+void readListToken (ifstream& archivo, tListToken& listToken);
+bool readGame(tPlay play);
+void writeListToken(ofstream& archivo, tListToken& listToken);
+void writeGame(tPlay play);
+bool canDrawToken(tListToken tokens);
+bool isGameOver(tPlay& play);
+bool putToken(tPlay& play, int player, int token);
+bool strategy1(tPlay& play, int player);
+bool strategy2(tPlay& play, int player);
+int playerTurn(tPlay& play, int& index);
+void init(tPlay& play, int& player);
+bool realPlayerOption(tPlay& play);
+void showWinner(int winner);
+void showPoints(tPlay play);
+void updatePoints(tPlay & play);
+bool question_S_N (string text);
+
+
+// main function
+int main(int argc, const char * argv[]) {
+    printf("\33c\e[3J");
+    tPlay play;
+    int turn = -1;
+	int winner = -1;
+	bool needInit = false;
+
+    srand(time(NULL));
+
+	if (!question_S_N("¿Quieres abrir un archivo anterior? (S/N)") || !readGame(play)) {
+		needInit = true;
+		play.maxNumber = question_INTER(6, 9, "Variante del juego (entre 6 y 9): ");
+		play.numbersPlayers = question_INTER(2, 4, "Elige número de jugadores(entre 2 y 4): ");
+		for(int i = 0; i < play.numbersPlayers; i++) {
+			play.points[i] = 0;
+		}
+    }
+    
+    do {
+		if (needInit) {
+			init(play, turn);
+		}
+		needInit = true;
+
+        for(bool end = false; !end; turn = (turn+1)%play.numbersPlayers) {
+            switch(turn) {
+                case 0:
+                    end = !realPlayerOption(play);
+                    break;
+                case 1:
+                    while(!strategy2(play, turn)) {
+                        if (play.pool.cont == 0) {
+							break;
+                        }
+                        
+                        drawTokens(play.pool, play.players[turn]);
+                    }
+                    break;
+                default:
+                    while(!strategy1(play, turn)) {
+                        if (play.pool.cont == 0) {
+							break;
+                        }
+                        
+                        drawTokens(play.pool, play.players[turn]);
+                    }
+                    break;
+            }
+			if (play.players[turn].cont == 0) {
+				updatePoints(play);
+				 end = true;
+				 winner = turn;
+			}
+        }
+
+        showWinner(winner);
+        showPoints(play);
+
+    } while (question_S_N("¿Quieres jugar otra ronda? (S/N)"));
+
+
+    
+    if (question_S_N("¿Quiéres guardar antes de salir? (S/N)")) {
+        writeGame(play);
+    }
+    return 0;
+}
 
 string toStr (int n) {
     switch (n) {
@@ -445,6 +545,7 @@ void init(tPlay& play, int& player) {
 
 
 bool realPlayerOption(tPlay& play) {
+    // printf '\33c\e[3J';
     for (int option = 0; option != 4;) {
         showBoard(play);
         option = showMenu();
@@ -530,73 +631,4 @@ bool question_S_N (string text) {
     }
     
     return option == 'S';
-}
-
-
-int main(int argc, const char * argv[]) {
-    system( COMMAND );
-    tPlay play;
-    int turn = -1;
-	int winner = -1;
-	bool needInit = false;
-
-    srand(time(NULL));
-
-	if (!question_S_N("¿Quieres abrir un archivo anterior? (S/N)") || !readGame(play)) {
-		needInit = true;
-		play.maxNumber = question_INTER(6, 9, "Variante del juego (entre 6 y 9): ");
-		play.numbersPlayers = question_INTER(2, 4, "Elige número de jugadores(entre 2 y 4): ");
-		for(int i = 0; i < play.numbersPlayers; i++) {
-			play.points[i] = 0;
-		}
-    }
-    
-    do {
-		if (needInit) {
-			init(play, turn);
-		}
-		needInit = true;
-
-        for(bool end = false; !end; turn = (turn+1)%play.numbersPlayers) {
-            switch(turn) {
-                case 0:
-                    end = !realPlayerOption(play);
-                    break;
-                case 1:
-                    while(!strategy2(play, turn)) {
-                        if (play.pool.cont == 0) {
-							break;
-                        }
-                        
-                        drawTokens(play.pool, play.players[turn]);
-                    }
-                    break;
-                default:
-                    while(!strategy1(play, turn)) {
-                        if (play.pool.cont == 0) {
-							break;
-                        }
-                        
-                        drawTokens(play.pool, play.players[turn]);
-                    }
-                    break;
-            }
-			if (play.players[turn].cont == 0) {
-				updatePoints(play);
-				 end = true;
-				 winner = turn;
-			}
-        }
-
-        showWinner(winner);
-        showPoints(play);
-
-    } while (question_S_N("¿Quieres jugar otra ronda? (S/N)"));
-
-
-    
-    if (question_S_N("¿Quiéres guardar antes de salir? (S/N)")) {
-        writeGame(play);
-    }
-    return 0;
 }
