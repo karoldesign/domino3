@@ -84,14 +84,14 @@ void showPoints(tPlay play);
 void updatePoints(tPlay & play);
 bool question_S_N (string text);
 
-void borrar( void ){
+void clean( void ){
 	system("cls||clear");	
 }
 
 
 // main function
 int main(int argc, const char * argv[]) {
-    borrar();
+    clean();
     tPlay play;
     int turn = -1;
 	int winner = -1;
@@ -303,7 +303,7 @@ short int chooseToken (tListToken token) {
         cout << "Elije ficha: ";
         cin >> chooseToken;
     }
-    borrar();
+    clean();
     return chooseToken-1;
 }
 
@@ -315,7 +315,7 @@ short int question_INTER (short int min, short int max, string text) {
         cout << text;
         cin >> element;
     }
-    borrar();
+    clean();
     return element;
 }
 
@@ -639,6 +639,6 @@ bool question_S_N (string text) {
         cin >> option;
     }
 
-    borrar();
+    clean();
     return option == 'S';
 }
