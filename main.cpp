@@ -84,10 +84,14 @@ void showPoints(tPlay play);
 void updatePoints(tPlay & play);
 bool question_S_N (string text);
 
+void borrar( void ){
+	system("cls||clear");	
+}
+
 
 // main function
 int main(int argc, const char * argv[]) {
-    printf("\33c\e[3J");
+    borrar();
     tPlay play;
     int turn = -1;
 	int winner = -1;
@@ -299,6 +303,7 @@ short int chooseToken (tListToken token) {
         cout << "Elije ficha: ";
         cin >> chooseToken;
     }
+    borrar();
     return chooseToken-1;
 }
 
@@ -310,6 +315,7 @@ short int question_INTER (short int min, short int max, string text) {
         cout << text;
         cin >> element;
     }
+    borrar();
     return element;
 }
 
@@ -545,7 +551,6 @@ void init(tPlay& play, int& player) {
 
 
 bool realPlayerOption(tPlay& play) {
-    // printf '\33c\e[3J';
     for (int option = 0; option != 4;) {
         showBoard(play);
         option = showMenu();
@@ -562,10 +567,12 @@ bool realPlayerOption(tPlay& play) {
                 if (canPutLeft(play.players[0].listToken[chosen].token1)) {
                     putTokenLeft(play.players[0].listToken[chosen].token2, play.players[0].listToken[chosen].token1);
                     deleteToken(play.players[0], chosen);
+
                     return true;
                 } else if (canPutLeft(play.players[0].listToken[chosen].token2)) {
                     putTokenLeft(play.players[0].listToken[chosen].token1, play.players[0].listToken[chosen].token2);
                     deleteToken(play.players[0], chosen);
+
                     return true;
                 } else {
                     cout << " ERROR! :-( " << endl;
@@ -576,10 +583,12 @@ bool realPlayerOption(tPlay& play) {
                 if (canPutRight(play.players[0].listToken[chosen].token1)) {
                     putTokenRight(play.players[0].listToken[chosen].token1, play.players[0].listToken[chosen].token2);
                     deleteToken(play.players[0], chosen);
+
                     return true;
                 } else if (canPutRight(play.players[0].listToken[chosen].token2)) {
                     putTokenRight(play.players[0].listToken[chosen].token2, play.players[0].listToken[chosen].token1);
                     deleteToken(play.players[0], chosen);
+
                     return true;
                 } else {
                     cout << " ERROR! :-( " << endl;
@@ -629,6 +638,7 @@ bool question_S_N (string text) {
         cout << text;
         cin >> option;
     }
-    
+
+    borrar();
     return option == 'S';
 }
