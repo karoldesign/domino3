@@ -14,6 +14,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
+
 using namespace std;
 
 string board;
@@ -435,6 +437,7 @@ void init(tPlay& play, int& player) {
 	player = (player+1)%play.numbersPlayers;
 }
 
+
 bool realPlayerOption(tPlay& play) {
     for (int option = 0; option != 4;) {
         showBoard(play);
@@ -581,7 +584,7 @@ int main(int argc, const char * argv[]) {
         showWinner(winner);
         showPoints(play);
 
-    } while (question_S_N("¿Quieres jugar otra ronda?"));
+    } while (question_S_N("¿Quieres jugar otra ronda? (S/N)"));
 
 
     
