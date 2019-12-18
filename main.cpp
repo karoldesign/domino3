@@ -595,6 +595,7 @@ bool realPlayerOption(tPlay& play) {
                 }
                 break;
             case 3:
+                clean();
                 if (canDrawToken(play.players[0])) {
                     if (play.pool.cont == 0) {
                         return true;
@@ -613,12 +614,12 @@ bool realPlayerOption(tPlay& play) {
 }
 
 void showWinner(int winner) {
-    cout << " " << endl;
-    cout << " ------------------------------- " << endl;
-    cout << " el jugador " << winner << endl;
-    cout << " ha sido el ganador de la ronda" << endl;
-    cout << " ------------------------------- " << endl;
-    cout << " " << endl;
+    cout << "" << endl;
+    cout << "----------------------------------" << endl;
+    cout << "el jugador" << winner << endl;
+    cout << "ha sido el ganador de la ronda " << endl;
+    cout << "----------------------------------" << endl;
+    cout << "" << endl;
 
 }
 
